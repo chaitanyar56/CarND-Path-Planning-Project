@@ -254,13 +254,13 @@ int main() {
             double ref_y = car_y;
             double ref_yaw = deg2rad(car_yaw);
 
-
+            // calculate the next waypoint
             if(prev_size < 2)
           	{
           		next_wp = NextWaypoint(ref_x, ref_y, ref_yaw, map_waypoints_x,map_waypoints_y);
           	}
           	else
-          	{
+          	{ // calculate yaw, speed based on the previous x and y values
       				ref_x = previous_path_x[prev_size-1];
 				      double ref_x_prev = previous_path_x[prev_size-2];
 				      ref_y = previous_path_y[prev_size-1];
@@ -272,8 +272,10 @@ int main() {
 
 				      car_speed = (sqrt((ref_x-ref_x_prev)*(ref_x-ref_x_prev)+(ref_y-ref_y_prev)*(ref_y-ref_y_prev))/.02)*2.237;
           	}
-
-
+            // ----------------------------------
+            // Behavior  -
+            // check if lane change is necessary and safe
+            // ----------------------------------
             double closest_dist_s = 100000;
             bool change_lanes = false;
             bool left_lane_safe = true;
@@ -316,6 +318,8 @@ int main() {
 
             }
 
+
+
             if (change_lanes && ((next_wp-lane_change_wp)%map_waypoints_x.size() > 2)){
               bool execute_lane_change = false;
 
@@ -331,6 +335,10 @@ int main() {
                 lane_change_wp = next_wp;
               }
             }
+
+            //------------------------------------------
+            // trajectory generation
+            // ----------------------------------------
 
             vector<double> ptsx;
             vector<double> ptsy;
